@@ -1,3 +1,4 @@
+<!-- Susanne Stenshagen, Silje Lien, Espen Kalstad -->
 <?php
 
 ?>
