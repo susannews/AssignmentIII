@@ -1,6 +1,5 @@
 <!-- Susanne Stenshagen, Silje Lien, Espen Kalstad -->
 <?php
-	require_once("database/connect.php");
 
 ?>
 <!DOCTYPE html>
@@ -18,33 +17,34 @@
 	<!-- Our stylesheet -->
 	<link rel="stylesheet" href="styles/stylesheet.css">
 </head>
-<body>	
+<body ng-app="">	
 	<div class="container-fluid">
 		<div class="row justify-content-md-center">
 			<div class="col-4" ng-app="">
-				<p>Input something in the input box:</p>
-				<p>Name : <input type="text" ng-model="name" placeholder="Enter name here"></p>
-				<h1>Hello {{name}}</h1>
-
-				<?php /* Get all tables from category */
-					$query = "SELECT * FROM users ORDER BY username";
-					$result = $pdo->prepare($query);
-					$result->execute();
-					$rows = $result->fetchAll();
-					foreach ($rows as $row) { 
-						/* Variable $get fetches all categories with id and then puts each category as a link for user to click to get newsarticle sorted by category */
-						$get = isset($_GET['username']);
-						echo "<a href='$get' class='dropdown-item'>{$row['username']}</a>";
-					}
-				?>
-		
-			</div>
-		</div>
-		
-		<div class="row justify-content-md-center">
-			<a href="login.php">Logg inn her</a>
-		</div>	
+			<form name="login">
+				<div class="form-group row">
+					<div class="col-12">
+						<input name="email" class="form-control" type="email" value="" placeholder="E-post" id="example-email-input" ng-model="email" required>
+						<p><span ng-show="login.email.$touched && login.email.$invalid">Epost kreves.</span></p>
+					</div>
+				</div>		
 			
+				<div class="form-group row">
+					<div class="col-12">
+						<input class="form-control" name="password" type="password" value="" placeholder="Ditt passord" id="example-password-input" ng-model="password" required>
+						<p><span ng-show="login.password.$touched && login.password.$invalid">Passord kreves.</span></p>
+					</div>
+				</div>		
+				<div class="col-12">
+					<button type="submit" class="btn btn-secondary">Logg inn</button>	
+				</div>		
+
+				<div class="row justify-content-md-center">
+					<a href="index.php">Tilbake til forsiden</a>
+				</div>	
+			</form>
+			</div>	
+		</div>
 	</div>
 	<!-- Bootstrap JavaScript plugins, jQuery, and Tether -->
 	<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>

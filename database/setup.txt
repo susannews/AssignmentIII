@@ -1,0 +1,123 @@
+-- phpMyAdmin SQL Dump
+-- version 4.5.2
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: 24. Mai, 2017 11:29 AM
+-- Server-versjon: 10.1.19-MariaDB
+-- PHP Version: 5.6.28
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `oppgave3`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Tabellstruktur for tabell `items`
+--
+
+CREATE TABLE `items` (
+  `item_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `item_name` varchar(255) COLLATE utf8_bin NOT NULL,
+  `description` text COLLATE utf8_bin NOT NULL,
+  `image` varchar(100) COLLATE utf8_bin NOT NULL,
+  `status` tinyint(1) NOT NULL,
+  `pickup_place` varchar(255) COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Dataark for tabell `items`
+--
+
+INSERT INTO `items` (`item_id`, `user_id`, `item_name`, `description`, `image`, `status`, `pickup_place`) VALUES
+(1, 1, 'Egg', 'Jeg kjøpte for mange egg til sist bursdag, så derfor vil jeg gjerne gi de bort før de går ut på dato. De er økologiske egg i M/L.', 'images/egg.jpg', 0, 'Raufoss, Frøyslandsv. 17'),
+(2, 2, 'Diverse hermetikk', 'Jeg har mange hermetikkbokser til overs, så jeg ønsker å gi de bort. Det er alt fra tomatbønner, lapskaus, spaghetti, fruktcocktail og så videre. Ta kontakt snartest!', 'images/hermetikk.jpg', 0, 'Kolbu, Dystlinna 249'),
+(3, 3, 'Hjemmelaget kjøttkaker og brød', 'Her om dagen laget jeg for mye kjøttkaker til middag, så jeg har 3 kg ekstra i fryseren. Jeg har også to brød til overs, så disse vil jeg også bli kvitt.', 'kjottkake.jpg', 0, 'Gjøvik, Kallerudv. 23');
+
+-- --------------------------------------------------------
+
+--
+-- Tabellstruktur for tabell `pm`
+--
+
+CREATE TABLE `pm` (
+  `id` bigint(20) NOT NULL,
+  `id2` int(11) NOT NULL,
+  `title` varchar(256) COLLATE utf8_bin NOT NULL,
+  `user1` bigint(20) NOT NULL,
+  `user2` bigint(20) NOT NULL,
+  `message` text COLLATE utf8_bin NOT NULL,
+  `timestamp` int(10) NOT NULL,
+  `user1read` varchar(3) COLLATE utf8_bin NOT NULL,
+  `user2read` varchar(3) COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellstruktur for tabell `users`
+--
+
+CREATE TABLE `users` (
+  `user_id` int(11) NOT NULL,
+  `firstname` varchar(100) COLLATE utf8_bin NOT NULL,
+  `lastname` varchar(255) COLLATE utf8_bin NOT NULL,
+  `username` varchar(60) COLLATE utf8_bin NOT NULL,
+  `phonenumber` int(10) NOT NULL,
+  `mail` varchar(255) COLLATE utf8_bin NOT NULL,
+  `password` varchar(60) COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Dataark for tabell `users`
+--
+
+INSERT INTO `users` (`user_id`, `firstname`, `lastname`, `username`, `phonenumber`, `mail`, `password`) VALUES
+(1, 'Susanne', 'Stenshagen', 'susannews', 90200970, 'susannestenshagen@yahoo.com', '123'),
+(2, 'Silje', 'Lien', 'siljelien', 95135595, 'siljelien@hotmail.com', '000'),
+(3, 'Espen', 'Kalstad', 'espenkal', 41497380, 'espenkalstad@gmail.com', '987');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `items`
+--
+ALTER TABLE `items`
+  ADD PRIMARY KEY (`item_id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`user_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `items`
+--
+ALTER TABLE `items`
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
