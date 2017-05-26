@@ -1,23 +1,32 @@
-<!-- Susanne Stenshagen, Silje Lien, Espen Kalstad -->
-<?php
-	require_once("database/connect.php");
-	/*include("search/livesearch.php"); */
+<?php 
+	require_once("../database/connect.php");	
+	require_once("../database/login-auth.php");
 
-	/* Sets a cookie for remembering users sorting preferences */
-	$cat = isset($_GET['cat']) ? "?cat={$_GET['cat']}" : "";
+	/* Select news articles and categories */
+	$query = "SELECT items.*, category.*, concat(u.firstname, ' ', u.lastname) AS author
+	          FROM items
+	          LEFT JOIN category ON items.category_id = category.category_id
+				 LEFT JOIN users AS u ON news.author = u.user_id
+			  WHERE items.item_id = ?
+			  GROUP BY items.item_id
+			  ";
+	$result = $pdo->prepare($query);
+	$result->execute([$_GET['item_id']]);
+	$row = $result->fetch();
 	
-	/* Sets cookie for rating and gives user newsfeed sorted by popularity */
-	if(isset($_GET['order']) AND $_GET['order'] == "rating" ) {
-		unset($_COOKIE['orderC']);
-		setCookie('orderC', 'rating', time()+(86400*30));
-		header("location: index.php$cat");
-		
-	} /* Sets cookie for date and gives user newsfeed sorted by news recently added */
-	elseif(isset($_GET['order']) AND $_GET['order'] == "date"){
-		unset($_COOKIE['orderC']);
-		setCookie('orderC', null, -1);
-		header("location: index.php$cat");
-	}	
+	/* Delete newsarticle only if author or admin clicks delete 
+	if(isset($_GET['delete']) && ($row['author'] === $_SESSION['id'] || $_SESSION['rank'] == 1)){
+		/* Gets 'are you sure' message and if yes, deletes the article and redirects to indexpage 
+		if(isset($_GET['areyousure']) && $_GET['areyousure'] == "yes"){
+			$query = "DELETE FROM news WHERE news_id = ?";
+			$result = $pdo->prepare($query);
+			if($result->execute([$row['news_id']])){
+				header("location: ../");
+			}
+		} else { /* if no, nothing happens, user stays on the same page 
+			$_GET['areyousure'] = "";
+		}
+	} */
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -88,82 +97,27 @@
   </div>
 </nav>
 
-<!-- <?php if(isset($_SESSION['username'])){ ?>
-	<div class="col-12">
-	<h3 id="welcomemsg">Welcome back, <?= $_SESSION['username'] ?> </h3> </div>
-	<div class="col-2 text-center">
-		<a href="news/addnews.php" class="btn btn-secondary">Add news</a></div>	 Only logged in users can add news
-<?php } ?>
-Only logged in users can see profile and logout button
-<?php if(isset($_SESSION['username'])){ ?>
-	<div class="col-2 text-center">
-		<a href="users/profile.php" class="btn btn-secondary">Profile</a>	</div>
-	If it is admin (admin is ranked 1, everyone else is 0)
-	<?php if(isset($_SESSION['username']) AND $_SESSION['rank'] == 1) { ?>
-		<div class="col-2 text-center">
-			<a href="users/admin.php" class="btn btn-secondary">Manage users</a>	</div>	
-	<?php }   ?> 			
-	Log out
-	<div class="col-2 text-center">
-		<a href="users/logout.php" class="btn btn-secondary">Log out</a> </div>
-<?php }  else { ?>
-	Visitors who are not logged in
-	<div class="col-2 text-center">	
-		<a href="users/login.php" class="btn btn-secondary">Login</a></div>
-	<div class="col-2 text-center">	
-		<a href="users/login.php" class="btn btn-secondary">Register</a></div>
-<?php }?> -->
-	
-	<div class="container-fluid">
-		
-			
-		<!-- Newsarticles -->
-	<div class="row justify-content-center">
-		<h2>Finn et matprodukt</h2>
+
+<div class="container-fluid">
+
+<!-- Newsarticles -->
+	<div class="row">
+	<div class="col-12 text-center space">
+	<h2><?= $row['item_name'] ?></h2>
+	<h6> <?= $row['name'] ?> </h6>
+	<h6> <?= $row['timestamp'] ?> </h6>
 	</div>
-
-	<?php 
-
-			$query = "SELECT * FROM items ORDER BY status";
-			$result = $pdo->prepare($query);
-			$result->execute();
-			/* News articles */
-			$rows = $result->fetchAll();
-			/* Does not show any HTML if there is no articles to find (if rows are 0) 
-				If rows are not 0, the foreach-loop goes through
-			*/
-			if($result->rowCount() !== 0){
-
-
-			foreach ($rows as $row) { ?>
-				<div class="row justify-content-center">
-					<div class="col-2">
-						<img id="indeximg" class="img-fluid" src="images/<?=  $row['image'] ?>" />
-					</div>
-					<div class="col-4">
-						<header>
-							<a class="link" href="items/items.php?id=<?=$row['item_id']?>"><h3> <?= $row['item_name'] ?> </h3></a>
-								<h4><?php 
-				if($row['status'] == 1) {
-					echo 'Produktet er ikke tilgjengelig lenger';
-				} else if($row['status'] == 0)  {
-					echo 'Tilgjengelig';
-				}; 
-									
-									
-									?> </h4>
-								<h5>Hentested: <?= $row['pickup_place'] ?> </h5>
-						</header>
-							<a href="items/items.php?id=<?=$row['item_id']?>" class="readmore">Finn ut mer om produktet</a>
-					</div>
-				</div>	
-			<?php } 
-			} else {
-				echo 'This Category is Empty!';
-			}
-			?>
+	<div class="col-5">
+		<img id="newsimg" class="img-fluid" src="../images/<?=  $row['image'] ?>" />
+	</div>
+	<div class="col-6"> <!-- preg_replace: Perform a regular expression search and replace -->
+		<p><?= preg_replace("/\n/ui", "<br />", $row['article']) ?></p>
+		<hr>
+		<p class="margin">Author: <?= $row['author'] ?></p>
 		
-			
+	</div>
+	</div>	
+	
 	</div>
 	<!-- Bootstrap JavaScript plugins, jQuery, and Tether -->
 	<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
