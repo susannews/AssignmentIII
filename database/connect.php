@@ -3,7 +3,7 @@
 
 $host = 'localhost';
 $user = 'root';
-$pass = 'dbpassord';
+$pass = 'dbpassord'; /* Remember to edit to your password */
 $db = 'oppgave3';
 
 
